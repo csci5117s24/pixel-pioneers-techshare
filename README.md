@@ -1,9 +1,15 @@
 # Creating an API for Google Sheets Using Google Apps Scripts 
 
 ## Table of Contents
+- [Why Google Sheets/App Scripts?](#why-google-sheetsapp-scripts)
+- [Create a spreadsheet](#create-a-spreadsheet)
+- [Create a script](#create-a-script)
+- [Writing Data](#writing-data)
+- [Reading Data](#reading-data)
+- [Deploying Your Script](#deploying-your-script)
+- [Further Reading](#further-reading)
 
-
-## Motivation
+## Why Google Sheets/App Scripts?
 
 
 
