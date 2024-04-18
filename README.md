@@ -50,7 +50,7 @@ var SHEET_ID = "YOUR SHEET ID"
 var SHEET_NAME = "YOUR SHEET NAME"
 ```
 
-### Writing Data
+## Writing Data
 
 Apps Scripts can have a variety of custom triggers from other integrated Google apps, such as on the submission of a Google Form, but the best and simplest way to trigger script execution from a third party app is to make an HTTP request.
 
@@ -69,7 +69,70 @@ The function `doGet(request)` serves as the handler for whenever the script dete
 
 The `sheet.appendRow()` line simply adds another row to the spreadsheet containing the id and value passed in through query parameters from the GET request.
 
-Now, save the project, and you are ready to deploy the script. 
+Now, save the project, and you are ready to test the script.
+
+![script-deploy-test](/images/script-deploy-test.png)
+
+Click on `Deploy > Test deployments` and copy the Web App URL.
+You can execute the script by sending a GET request to the Web App URL, which you can do by entering something like `WEB_APP_URL?id=1&value=9` into your browser.
+
+If everything worked, you will be redirected to a page saying `The script completed but did not return anything`. Now go back to your spreadsheet and you should see the new row of data.
+
+![sheet-new-data](/images/sheet-new-data.png)
+
+Now there is a new row with the sensor id and value you specified in the URL, and the average for that sensor should have updated as well.
+
+## Reading Data
+
+Right now we have two options: putting both the read and write functionality all in the same script, or creating seperate scripts for each required behavior. Each option has its pros and cons, and you will have to decide what makes the most sense for your use case. Having it all in one script is more contained, but you will need to set a query parameter to distinguish which behavior you want it to perform, along with many if statements to separate each behavior. On the other hand, seperate scripts can be cleaner on a per script basis, but you will have to keep track of each deployment ID individually (more on that later) you will have to manage more than just the one script. For the purposes of this example, we will use the first option.
+
+First, since we want to keep the write function intact, put it inside an if statement like this:
+
+```
+var command = request.parameter.command;
+    if (command === "write-data") {
+    sheet.appendRow([request.parameter.id, request.parameter.value]);
+}
+```
+
+You can still run the write command, but now the URL will look like `WEB_APP_URL?command=write-data&id=1&value=9`.
+
+Now we can add the ability to get the two average sensor values through the API script. Reading data from the spreadsheet requires a few more lines of code, but it is still pretty simple.
+
+```
+else if (command === "read-averages") {
+    var averages = sheet.getRange("D2:E2").getValues();
+    var json = JSON.stringify([{"sensor-id": 1, "value": averages[0][0]}, {"sensor-id": 2, "value": averages[0][1]}]);
+    return ContentService.createTextOutput(json).setMimeType(ContentService.MimeType.JSON);
+}
+```
+
+This chunk of code reads the values of the cells containing the averages, converts them into a json string, and then uses the built in ContentService object to create an HTML response. Now, enter `WEB_APP_URL?command=read-averages` into your browser and you should see something like the following.
+
+![read-averages-json](/images/read-averages-json.png)
+
+Next, we can add another behaivior to get all the sensor data.
+
+```
+else if (command === "read-all-data") {
+    lastrow = sheet.getLastRow();
+    var ids = sheet.getRange("A2:A"+lastrow).getValues();
+    var values = sheet.getRange("B2:B"+lastrow).getValues();
+    var json = [];
+    for (var i in ids) {
+      json.push({"sensor-id": ids[i][0], "value": values[i][0]});
+    }
+    return ContentService.createTextOutput(JSON.stringify(json)).setMimeType(ContentService.MimeType.JSON);
+}
+```
+
+This creates a list of objects containing the sensor readings and the id of the sensor that sent them. Entering `WEB_APP_URL?command=read-all-data` into the browser will show something similar to the below json object.
+
+![read-all-data-json](/images/read-all-data-json.png)
+
+## Deploying Your Script
+
+Once you are done testing your script(s) and are ready to finalize them, you can create a versioned deployment. This deployment will not change as you update your script, so any users can continue to use a functioning version while you make updates to the code (the same reason you would want seperate production and development branches in GitHub).
 
 (Note: One thing I noticed here is that if you are using Chrome and your browser is signed in to a different account than you are using to create the script (accout 1 is signed into chrome but you signed into google drive with account 2), the deployment will just load infinitely.)
 
@@ -89,13 +152,7 @@ Depending on your situation, you may be able to get away with keeping permission
 
 After clicking Deploy, you will be prompted to authorize the newly created web app to run the script by logging into your google account again. Once this is done, you will be given a Deployment ID and a Web App URL. You should copy these somewhere safe, but _keep them secret_, as anyone with the ID can execute the code (if you set permissions to Anyone).
 
-Now that you have deployed the script, all you have to do is send a GET request to the Web App URL, which you can test by entering something like `WEB_APP_URL?id=1&value=9` into your browser.
-
-If everything worked, you will be redirected to a page saying `The script completed but did not return anything`. Now go back to your spreadsheet and you should see the new row of data.
-
-### Reading Data
-
-
-
+Now, you can use the Web App URL from your deployment just like you did in testing, but now other devices can execute the scripts as well.
 
 ## Further Reading
+
