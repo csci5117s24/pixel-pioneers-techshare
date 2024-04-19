@@ -11,7 +11,7 @@
 
 ## Why Google Sheets/App Scripts?
 
-
+While all the common databases are great at what they do, sometimes they might not be the best option. What if you are working on a small, simple project, don't want to bother setting up hosting for it, or need it to be accessible to people who don't know much about database design? Using Google Sheets can be a great alternative since it can be as simple or complex as you need it to be, and generally more people are familiar with Sheets/Excel than they are with something like a SQL database. All it takes is a relatively simple Google Apps Script to connect to it and serve as an API, and data can be read, written or modified through a single HTML GET request.
 
 ## Create a spreadsheet
 
@@ -162,3 +162,6 @@ Now, you can use the Web App URL from your deployment just like you did in testi
 
 ## Further Reading
 
+[Google Apps Script quickstart guide](https://developers.google.com/sheets/api/quickstart/apps-script)
+[Build An API in Google Sheets and Google Apps Script](https://hooshmand.net/api-google-sheets-google-apps-script/)
+[Make an API With Google Sheets and Google Apps Script (Youtube)](https://www.youtube.com/watch?v=3OakodfKjrU)
