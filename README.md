@@ -79,7 +79,7 @@ Now, save the project, and you are ready to test the script.
 
 ![script-deploy-test](/images/script-deploy-test.png)
 
-Click on `Deploy > Test deployments` and copy the Web App URL.
+Click on `Deploy > Test deployments` and copy the Web App URL. When it asks for the type of deployment, click and add `web app`.
 You can execute the script by sending a GET request to the Web App URL, which you can do by entering something like `WEB_APP_URL?id=1&value=9` into your browser.
 
 If everything worked, you will be redirected to a page saying `The script completed but did not return anything`. Now go back to your spreadsheet and you should see the new row of data.
