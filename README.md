@@ -6,6 +6,8 @@
 - [Create a script](#create-a-script)
 - [Writing Data](#writing-data)
 - [Reading Data](#reading-data)
+- [Deleting Data](#deleting-data)
+- [Updating Data](#updating-data)
 - [Deploying Your Script](#deploying-your-script)
 - [Further Reading](#further-reading)
 
@@ -133,6 +135,12 @@ else if (command === "read-all-data") {
 This creates a list of objects containing the sensor readings and the id of the sensor that sent them. Entering `WEB_APP_URL?command=read-all-data` into the browser will show something similar to the below json object.
 
 ![read-all-data-json](/images/read-all-data-json.png)
+
+## Deleting Data
+Working on adding stuff...
+
+## Updating Data
+Working on adding stuff...
 
 ## Deploying Your Script
 
