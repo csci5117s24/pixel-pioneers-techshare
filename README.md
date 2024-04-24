@@ -34,8 +34,6 @@ Sensor 2 Avg:
 
 ![average-function](/images/sheets-average-function.png)
 
-
-
 ## Create a script
 
 The next step is to create a script that can access the spreadsheet you just created. Conveniently, this can be done right from Google Drive. Just click the `+ New` button on the top left and you will see `Google Apps Script` under `More` at the bottom.
@@ -140,7 +138,7 @@ This creates a list of objects containing the sensor readings and the id of the 
 
 Once you are done testing your script(s) and are ready to finalize them, you can create a versioned deployment. This deployment will not change as you update your script, so any users can continue to use a functioning version while you make updates to the code (the same reason you would want seperate production and development branches in GitHub).
 
-(Note: One thing I noticed here is that if you are using Chrome and your browser is signed in to a different account than you are using to create the script (accout 1 is signed into chrome but you signed into google drive with account 2), the deployment will just load infinitely.)
+(Note: One thing I noticed here is that if you are using Chrome and your browser is signed in to a different account than you are using to create the script, the deployment will just load infinitely. See [Common Issues](#common-issues).)
 
 ![script-deploy](/images/script-deploy.png)
 
@@ -159,6 +157,12 @@ Depending on your situation, you may be able to get away with keeping permission
 After clicking Deploy, you will be prompted to authorize the newly created web app to run the script by logging into your google account again. Once this is done, you will be given a Deployment ID and a Web App URL. You should copy these somewhere safe, but _keep them secret_, as anyone with the ID can execute the code (if you set permissions to Anyone).
 
 Now, you can use the Web App URL from your deployment just like you did in testing, but now other devices can execute the scripts as well.
+
+## Common Issues
+
+When trying to execute the script for the first time, if it does not work, check that the SHEET_NAME is correct. It should be set to the name of the sheet, which is found on the bottom left of the screen, NOT the name of the sheets document that is found on the top left.
+
+When attempting to deploy your script, you may encounter an issue where the page will get hung up on loading the deloyment data. One possible cause for this is being logged in to different accounts in your chrome browser and in google drive itself. To fix this, sign in to the same google account in both places.
 
 ## Further Reading
 
