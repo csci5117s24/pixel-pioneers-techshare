@@ -50,7 +50,7 @@ The two things you will need at the begining of every script are the id of your 
 
 Start by deleting the empty function that generates in the file, and replace it with the following few lines of code, replacing the two strings with the id and name of your own google sheet.
 
-```
+```javascript
 // Replace these strings with your sheet id and name
 var SHEET_ID = "YOUR SHEET ID"
 var SHEET_NAME = "YOUR SHEET NAME"
@@ -60,7 +60,7 @@ var SHEET_NAME = "YOUR SHEET NAME"
 
 Apps Scripts can have a variety of custom triggers from other integrated Google apps, such as on the submission of a Google Form, but the best and simplest way to trigger script execution from a third party app is to make an HTTP request.
 
-```
+```javascript
 // Called when a GET request is received
 function doGet(request) {
   var ss = SpreadsheetApp.openById(SHEET_ID);
@@ -94,7 +94,7 @@ Right now we have two options: putting both the read and write functionality all
 
 First, since we want to keep the write function intact, put it inside an if statement like this:
 
-```
+```javascript
 var command = request.parameter.command;
     if (command === "write-data") {
     sheet.appendRow([request.parameter.id, request.parameter.value]);
@@ -105,7 +105,7 @@ You can still run the write command, but now the URL will look like `WEB_APP_URL
 
 Now we can add the ability to get the two average sensor values through the API script. Reading data from the spreadsheet requires a few more lines of code, but it is still pretty simple.
 
-```
+```javascript
 else if (command === "read-averages") {
     var averages = sheet.getRange("D2:E2").getValues();
     var json = JSON.stringify([{"sensor-id": 1, "value": averages[0][0]}, {"sensor-id": 2, "value": averages[0][1]}]);
@@ -119,7 +119,7 @@ This chunk of code reads the values of the cells containing the averages, conver
 
 Next, we can add another behaivior to get all the sensor data.
 
-```
+```javascript
 else if (command === "read-all-data") {
     lastrow = sheet.getLastRow();
     var ids = sheet.getRange("A2:A"+lastrow).getValues();
