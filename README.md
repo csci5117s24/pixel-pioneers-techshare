@@ -7,6 +7,7 @@
 - [Writing Data](#writing-data)
 - [Reading Data](#reading-data)
 - [Deploying Your Script](#deploying-your-script)
+- [Common Issues](#common-issues)
 - [Further Reading](#further-reading)
 
 ## Why Google Sheets/App Scripts?
