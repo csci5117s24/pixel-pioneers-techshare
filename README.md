@@ -7,11 +7,16 @@
 - [Writing Data](#writing-data)
 - [Reading Data](#reading-data)
 - [Deploying Your Script](#deploying-your-script)
+- [Common Issues](#common-issues)
 - [Further Reading](#further-reading)
 
 ## Why Google Sheets/App Scripts?
 
-While all the common databases are great at what they do, sometimes they might not be the best option. What if you are working on a small, simple project, don't want to bother setting up hosting for it, or need it to be accessible to people who don't know much about database design? Using Google Sheets can be a great alternative since it can be as simple or complex as you need it to be, and generally more people are familiar with Sheets/Excel than they are with something like a SQL database. All it takes is a relatively simple Google Apps Script to connect to it and serve as an API, and data can be read, written or modified through a single HTML GET request.
+SQL and noSQL databases are pretty great at what they do, and are generally the best (and prefered) way to do data storage. Google Sheets on the other hand is frowned upon by many people for any sort of data storage, no matter the scale. Why then does this document discuss how to make an API for Sheets? Well, there are actually a few cases where it would be more acceptable to use Sheets over a full scale database. Some such cases are if you are in a proof-of-concept stage of development where you need to bash something together quickly and focus your efforts elsewhere, or if you already have an existing spreadsheet set up that with functionality that might be too complex to be worth migrating to a true database. All it takes is a relatively simple Google Apps Script to connect to a Google Sheet and serve as an API, and data can be read, written or modified through a single HTML GET request.
+
+For project 2, our group is making a plant tracker app that allows a user to connect to a sensor and track things like moisture and temperature. The sensors themselves run off of low power microcontrollers which have a minimal amount of on-board memory, so the overhead from including C libraries to interface with something like a mongodb database can be fairly expensive. The libraries for simply sending and receiving html requests however requires much less overhead. Storing the data in Google Sheets is also acceptable for this use case bacause we don't need to have any of the more complex functionality that would come with a fully functional database.
+
+If you or your team decide that using Google Sheets is the way you want to proceed for your project, or if you are simply interested in playing around with it for yourself, Great! The rest of this document provides a tutorial for setting up some of the basic operations you might need for a general use case.
 
 ## Create a spreadsheet
 
