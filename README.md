@@ -140,12 +140,64 @@ This creates a list of objects containing the sensor readings and the id of the 
 ![read-all-data-json](/images/read-all-data-json.png)
 
 ## Deleting Data
-Working on adding stuff...
+
+```javascript
+function Test(request) {
+  var command = request.parameter.command;
+  switch (command) {
+    case "update-data":
+      return doPut(request);
+    case "delete-data":
+      return doDelete(request);
+    default:
+      return ContentService.createTextOutput("Command not recognized.");
+  }
+}
+
+
+function doDelete(request) {
+  var ss = SpreadsheetApp.openById(""); // TODO: Fill this in
+  var sheet = ss.getSheetByName(); // TODO: Fill this in
+  var lastRow = sheet.getLastRow(); // gets the last row
+  var dataRange = sheet.getRange(2, 1, lastRow, 1); // get range parameters say that the range starts at 2nd row, column 1, extends down to last row, and spans 1 column.
+  var data = dataRange.getValues(); // values are added to a 2d array
+
+  for (var i = 0; i < data.length; i++) { // iterating through the array
+    if (data[i][0] == request.parameter.id) { // finding the row to delete based on the matching id
+      sheet.deleteRow(i + 2); // index adjustment due to first row being headers and array starting from 0.
+      break;
+    }
+  }
+}
+```
+
+You can use this code above to test the delete features. You can use the code to delete the row that corresponds to a certain id and data you want to remove from your Google Sheet. You can test this code for yourself by entering `WEB_APP_URL?command=delete-data&id=1`. In this case, you are deleting the row in the Google Sheet with id = 1.
 
 
 
 ## Updating Data
-Working on adding stuff...
+
+```javascript
+function doPut(request) {
+    var ss = SpreadsheetApp.openById(); // TODO: Fill this in
+    var sheet = ss.getSheetByName(); // TODO: Fill this in
+    var lastRow = sheet.getLastRow(); // get the last row
+    var dataRange = sheet.getRange(2, 1, lastRow, 2); // Assumes ID is in column A and value in column B. Starts at 2nd row, 1st column, extends down to last row, and spans 2 columns.
+    var data = dataRange.getValues(); // getting the data and adding to a 2d array
+
+    for (var i = 0; i < data.length; i++) { // iterating through the array
+        if (data[i][0] == request.parameter.id) { // Checking if the ID matches
+            sheet.getRange(i + 2, 2).setValue(request.parameter.value); // setting the new value for the matching id
+            break;
+        }
+    }
+}
+```
+You can use this code above to test the Update/Put features. You can use the code to update the value in the row that corresponds with the id that you passed in. You can test this code for yourself by entering `WEB_APP_URL?command=update-data&id=7&value=11`. In this case, you are updating the row with id 7 and changing the previous value in column 2 with the new value that is now 11.
+
+With Create, Retrieve, Update, and Delete functionality complete, you now essentially have a lightweight database that can be used for free and with minimal set up. Now you can set up Google Sheets to test your applications CRUD functionality.
+
+All of these examples can be copied directly into the Google App Scripts and deployed as explained below.
 
 ## Deploying Your Script
 
