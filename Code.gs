@@ -1,10 +1,10 @@
-// Replace these strings with your sheet id and name
-var SHEET_ID = "102Uopcnh9OglNFaU6QDm5jTjh_55ObMFVlqyMFdlse4";
-var SHEET_NAME = "Sheet1";
+// Replace these empty strings with your sheet id and name
+var SHEET_ID = "";
+var SHEET_NAME = "";
 
-function doPut(request) {
-    var ss = SpreadsheetApp.openById(); // TODO: Fill this in
-    var sheet = ss.getSheetByName(); // TODO: Fill this in
+function doUpdate(request) {
+    var ss = SpreadsheetApp.openById(SHEET_ID);
+    var sheet = ss.getSheetByName(SHEET_NAME);
     var lastRow = sheet.getLastRow(); // get the last row
     var dataRange = sheet.getRange(2, 1, lastRow, 2); // Assumes ID is in column A and value in column B. Starts at 2nd row, 1st column, extends down to last row, and spans 2 columns.
     var data = dataRange.getValues(); // getting the data and adding to a 2d array
@@ -18,8 +18,8 @@ function doPut(request) {
 }
 
 function doDelete(request) {
-  var ss = SpreadsheetApp.openById(""); // TODO: Fill this in
-  var sheet = ss.getSheetByName(); // TODO: Fill this in
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sheet = ss.getSheetByName(SHEET_NAME);
   var lastRow = sheet.getLastRow(); // gets the last row
   var dataRange = sheet.getRange(2, 1, lastRow, 1); // get range parameters say that the range starts at 2nd row, column 1, extends down to last row, and spans 1 column.
   var data = dataRange.getValues(); // values are added to a 2d array
@@ -60,6 +60,6 @@ function doGet(request) {
     return doDelete(request);
   }
   else if (command === "update-data") {
-    return doPut(request);
+    return doUpdate(request);
   }
 }
