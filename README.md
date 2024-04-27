@@ -1,15 +1,18 @@
 # Creating an API for Google Sheets Using Google Apps Scripts 
 
 ## Table of Contents
-- [Why Google Sheets/App Scripts?](#why-google-sheetsapp-scripts)
-- [Create a spreadsheet](#create-a-spreadsheet)
-- [Create a script](#create-a-script)
-- [Writing Data](#writing-data)
-- [Reading Data](#reading-data)
-- [Deleting Data](#deleting-data)
-- [Updating Data](#updating-data)
-- [Deploying Your Script](#deploying-your-script)
-- [Further Reading](#further-reading)
+- [Creating an API for Google Sheets Using Google Apps Scripts](#creating-an-api-for-google-sheets-using-google-apps-scripts)
+  - [Table of Contents](#table-of-contents)
+  - [Why Google Sheets/App Scripts?](#why-google-sheetsapp-scripts)
+  - [Create a spreadsheet](#create-a-spreadsheet)
+  - [Create a script](#create-a-script)
+  - [Writing Data](#writing-data)
+  - [Reading Data](#reading-data)
+  - [Deleting Data](#deleting-data)
+  - [Updating Data](#updating-data)
+  - [Deploying Your Script](#deploying-your-script)
+  - [Common Issues](#common-issues)
+  - [Further Reading](#further-reading)
 
 ## Why Google Sheets/App Scripts?
 
@@ -138,6 +141,8 @@ This creates a list of objects containing the sensor readings and the id of the 
 
 ## Deleting Data
 Working on adding stuff...
+
+
 
 ## Updating Data
 Working on adding stuff...
