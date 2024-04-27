@@ -84,14 +84,9 @@ The function `doGet(request)` serves as the handler for whenever the script dete
 
 The `sheet.appendRow()` line simply adds another row to the spreadsheet containing the id and value passed in through query parameters from the GET request.
 
-Now, save the project, and you are ready to test the script.
+If at any point before the end of this tutorial you want to test the code you have so far, see [Deploying Your Script](#deploying-your-script) for instructions on how to deploy and test the script.
 
-![script-deploy-test](/images/script-deploy-test.png)
-
-After you create a deployment on `Deploy > New Deployment`, Click on `Deploy > Test deployments` and copy the Web App URL. When it asks for the type of deployment, click and add `web app`.
-You can execute the script by sending a GET request to the Web App URL, which you can do by entering something like `WEB_APP_URL?id=1&value=9` into your browser.
-
-If everything worked, you will be redirected to a page saying `The script completed but did not return anything`. Now go back to your spreadsheet and you should see the new row of data.
+If you deployed, you can test this specific function by entering `WEB_APP_URL?id=1&value=9`. If everything worked, you will be redirected to a page saying `The script completed but did not return anything`. Now go back to your spreadsheet and you should see the new row of data.
 
 ![sheet-new-data](/images/sheet-new-data.png)
 
@@ -145,25 +140,49 @@ This creates a list of objects containing the sensor readings and the id of the 
 
 ![read-all-data-json](/images/read-all-data-json.png)
 
-## Deleting Data
+## Updating Data
+
+The next CRUD operation to go over is Update. Add the following function to your Code.gs file.
 
 ```javascript
-function Test(request) {
-  var command = request.parameter.command;
-  switch (command) {
-    case "update-data":
-      return doPut(request);
-    case "delete-data":
-      return doDelete(request);
-    default:
-      return ContentService.createTextOutput("Command not recognized.");
-  }
+function doUpdate(request) {
+    var ss = SpreadsheetApp.openById(SHEET_ID);
+    var sheet = ss.getSheetByName(SHEET_NAME);
+    var lastRow = sheet.getLastRow(); // get the last row
+    var dataRange = sheet.getRange(2, 1, lastRow, 2); // Assumes ID is in column A and value in column B. Starts at 2nd row, 1st column, extends down to last row, and spans 2 columns.
+    var data = dataRange.getValues(); // getting the data and adding to a 2d array
+
+    for (var i = 0; i < data.length; i++) { // iterating through the array
+        if (data[i][0] == request.parameter.id) { // Checking if the ID matches
+            sheet.getRange(i + 2, 2).setValue(request.parameter.value); // setting the new value for the matching id
+            break;
+        }
+    }
 }
+```
 
+Now add another `else if` block to your `doGet()` function and call doUpdate from there.
 
+```javascript
+else if (command === "update-data") {
+    return doUpdate(request);
+}
+```
+
+Since the code for update is a bit longer in this case, we have opted to move it into its own seperate function and call that from `doGet()`.
+
+You can use the code above to update the value in the row that corresponds with the id that you passed in. You can test this code for yourself by entering `WEB_APP_URL?command=update-data&id=1&value=10`. In this case, you are updating the row with id 1 and changing the previous value in column 2 with the new value that is now 10.
+
+![sheet-update](/images/sheet-update.png)
+
+## Deleting Data
+
+The final CRUD operation to go over is Delete. Add the following function to your Code.gs file.
+
+```javascript
 function doDelete(request) {
-  var ss = SpreadsheetApp.openById(""); // TODO: Fill this in
-  var sheet = ss.getSheetByName(); // TODO: Fill this in
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sheet = ss.getSheetByName(SHEET_NAME);
   var lastRow = sheet.getLastRow(); // gets the last row
   var dataRange = sheet.getRange(2, 1, lastRow, 1); // get range parameters say that the range starts at 2nd row, column 1, extends down to last row, and spans 1 column.
   var data = dataRange.getValues(); // values are added to a 2d array
@@ -177,33 +196,21 @@ function doDelete(request) {
 }
 ```
 
-You can use this code above to test the delete features. You can use the code to delete the row that corresponds to a certain id and data you want to remove from your Google Sheet. You can test this code for yourself by entering `WEB_APP_URL?command=delete-data&id=1`. In this case, you are deleting the row in the Google Sheet with id = 1.
-
-
-
-## Updating Data
+Again, add another `else if` block to your `doGet()` function and call doDelete from there.
 
 ```javascript
-function doPut(request) {
-    var ss = SpreadsheetApp.openById(); // TODO: Fill this in
-    var sheet = ss.getSheetByName(); // TODO: Fill this in
-    var lastRow = sheet.getLastRow(); // get the last row
-    var dataRange = sheet.getRange(2, 1, lastRow, 2); // Assumes ID is in column A and value in column B. Starts at 2nd row, 1st column, extends down to last row, and spans 2 columns.
-    var data = dataRange.getValues(); // getting the data and adding to a 2d array
-
-    for (var i = 0; i < data.length; i++) { // iterating through the array
-        if (data[i][0] == request.parameter.id) { // Checking if the ID matches
-            sheet.getRange(i + 2, 2).setValue(request.parameter.value); // setting the new value for the matching id
-            break;
-        }
-    }
+else if (command === "delete-data") {
+    return doDelete(request);
 }
 ```
-You can use this code above to test the Update/Put features. You can use the code to update the value in the row that corresponds with the id that you passed in. You can test this code for yourself by entering `WEB_APP_URL?command=update-data&id=7&value=11`. In this case, you are updating the row with id 7 and changing the previous value in column 2 with the new value that is now 11.
 
-With Create, Retrieve, Update, and Delete functionality complete, you now essentially have a lightweight database that can be used for free and with minimal set up. Now you can set up Google Sheets to test your applications CRUD functionality.
+This code works just like the update function, except it  deletes the corresponsing id and data cells, shifting up every cell beneath the deleted ones.
 
-All of these examples can be copied directly into the Google App Scripts and deployed as explained below.
+You should now be able to test the delete feature by entering `WEB_APP_URL?command=delete-data&id=2`. In this case, you are deleting the first row in the Google Sheet that has an id of 2.
+
+![sheet-delete](/images/sheet-delete.png)
+
+With Create, Retrieve, Update, and Delete functionality complete, you now essentially have a customizable lightweight database that can be used for free and with minimal set up.
 
 ## Deploying Your Script
 
@@ -228,6 +235,10 @@ Depending on your situation, you may be able to get away with keeping permission
 After clicking Deploy, you will be prompted to authorize the newly created web app to run the script by logging into your google account again. Once this is done, you will be given a Deployment ID and a Web App URL. You should copy these somewhere safe, but _keep them secret_, as anyone with the ID can execute the code (if you set permissions to Anyone).
 
 Now, you can use the Web App URL from your deployment just like you did in testing, but now other devices can execute the scripts as well.
+
+This URL can also be viewed without having to create a new deployment by clicking `Deploy > Test deployments`
+
+![script-deploy-test](/images/script-deploy-test.png)
 
 ## Common Issues
 
