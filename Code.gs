@@ -2,6 +2,36 @@
 var SHEET_ID = "102Uopcnh9OglNFaU6QDm5jTjh_55ObMFVlqyMFdlse4";
 var SHEET_NAME = "Sheet1";
 
+function doPut(request) {
+    var ss = SpreadsheetApp.openById(); // TODO: Fill this in
+    var sheet = ss.getSheetByName(); // TODO: Fill this in
+    var lastRow = sheet.getLastRow(); // get the last row
+    var dataRange = sheet.getRange(2, 1, lastRow, 2); // Assumes ID is in column A and value in column B. Starts at 2nd row, 1st column, extends down to last row, and spans 2 columns.
+    var data = dataRange.getValues(); // getting the data and adding to a 2d array
+
+    for (var i = 0; i < data.length; i++) { // iterating through the array
+        if (data[i][0] == request.parameter.id) { // Checking if the ID matches
+            sheet.getRange(i + 2, 2).setValue(request.parameter.value); // setting the new value for the matching id
+            break;
+        }
+    }
+}
+
+function doDelete(request) {
+  var ss = SpreadsheetApp.openById(""); // TODO: Fill this in
+  var sheet = ss.getSheetByName(); // TODO: Fill this in
+  var lastRow = sheet.getLastRow(); // gets the last row
+  var dataRange = sheet.getRange(2, 1, lastRow, 1); // get range parameters say that the range starts at 2nd row, column 1, extends down to last row, and spans 1 column.
+  var data = dataRange.getValues(); // values are added to a 2d array
+
+  for (var i = 0; i < data.length; i++) { // iterating through the array
+    if (data[i][0] == request.parameter.id) { // finding the row to delete based on the matching id
+      sheet.deleteRow(i + 2); // index adjustment due to first row being headers and array starting from 0.
+      break;
+    }
+  }
+}
+
 // Called when a GET request received
 function doGet(request) {
   var ss = SpreadsheetApp.openById(SHEET_ID);
@@ -25,5 +55,11 @@ function doGet(request) {
       json.push({"sensor-id": ids[i][0], "value": values[i][0]});
     }
     return ContentService.createTextOutput(JSON.stringify(json)).setMimeType(ContentService.MimeType.JSON);
+  }
+  else if (command === "delete-data") {
+    return doDelete(request);
+  }
+  else if (command === "update-data") {
+    return doPut(request);
   }
 }
